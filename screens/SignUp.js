@@ -1,5 +1,10 @@
 import React, { Component } from 'react';
-import { View, Text, TouchableHighlight } from 'react-native';
+import {
+  View,
+  Text,
+  KeyboardAvoidingView,
+  TouchableHighlight,
+ } from 'react-native';
 import t from 'tcomb-form-native';
 import Person, { formOptions } from '../models/Person';
 
@@ -23,6 +28,9 @@ export default class SignUp extends Component {
     const Form = t.form.Form;
     return (
       <View style={styles.container}>
+        <KeyboardAvoidingView
+            behavior="padding"
+            style={styles.container}>
         <Text style={styles.title}>Sign up for ShatApp</Text>
         <Form
           ref="form"
@@ -35,6 +43,7 @@ export default class SignUp extends Component {
         >
           <Text style={styles.buttonText}>Sign up</Text>
         </TouchableHighlight>
+        </KeyboardAvoidingView>
       </View>
     );
   }
