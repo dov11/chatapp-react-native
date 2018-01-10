@@ -75,4 +75,4 @@ class SignUp extends Component {
 
 const mapStateToProps = ({ loading }) => ({ loading })
 
-export default connect(mapStateToProps, { signUp })
+export default connect(mapStateToProps, { signUp })(SignUp)
