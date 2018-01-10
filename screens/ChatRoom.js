@@ -1,4 +1,3 @@
-
 import React, { Component } from 'react';
 import ReactNative, {
   View,
@@ -6,6 +5,7 @@ import ReactNative, {
   KeyboardAvoidingView,
   TouchableHighlight,
   Text,
+  Image,
 } from 'react-native';
 import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
@@ -52,6 +52,24 @@ class ChatRoom extends Component {
     const newMessage = form.getValue();
     this.props.postMessage(newMessage.text);
     this.clearForm();
+  }
+
+  renderMessage(message, index) {
+    const { users } = this.props
+    const author = users.filter((u) => (u._id === message.authorId))[0];
+    console.log(author)
+
+    return (
+      <View ref={`msg${index}`} key={index} style={styles.message}>
+        <Image
+          style={styles.avatar}
+          source={{uri: author.gravatar}} />
+        <View>
+          <Text style={styles.author}>{message.author}</Text>
+          <Text style={styles.text}>{message.text}</Text>
+        </View>
+      </View>
+    );
   }
 
   render() {

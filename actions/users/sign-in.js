@@ -19,7 +19,6 @@ export default (user) => {
     console.log('here')
     api.authenticate(user)
       .then((result) => {
-        console.log('after auth')
         dispatch({ type: API_READY });
         Actions.chatRoom();
         dispatch({

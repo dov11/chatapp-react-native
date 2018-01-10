@@ -1,14 +1,36 @@
 import React, { Component } from 'react';
-import { View } from 'react-native';
+import { AppState, View } from 'react-native';
 import { Provider } from 'react-redux';
 import { Router, Scene } from 'react-native-router-flux';
 import store from './store';
 import SignIn from './screens/SignIn';
 import SignUp from './screens/SignUp';
 import ChatRoom from './screens/ChatRoom';
+import { loadMessages } from './actions/messages/subscribe';
 // import styles from './App.styles';
 
 export default class App extends Component {
+  state = {
+    appState: AppState.currentState
+  }
+
+  componentDidMount() {
+    AppState.addEventListener('change', this._handleAppStateChange);
+  }
+
+  componentWillUnmount() {
+    AppState.removeEventListener('change', this._handleAppStateChange);
+  }
+
+  _handleAppStateChange = (nextAppState) => {
+    console.log(nextAppState, this.state)
+    if (this.state.appState.match(/inactive|background/) && nextAppState === 'active') {
+      console.log('App has come to the foreground!')
+      store.dispatch(loadMessages());
+    }
+    this.setState({appState: nextAppState});
+  }
+
   render() {
     return (
       <Provider store={store}>
