@@ -1,5 +1,7 @@
 import API from '../../lib/api';
 import signIn from './sign-in';
+import { Actions } from 'react-native-router-flux';
+
 import {
   API_LOADING,
   API_READY,
@@ -16,6 +18,7 @@ export default (user) => {
     dispatch({ type: API_LOADING });
     users.create(user)
       .then((result) => {
+        Actions.signIn();
         dispatch(signIn(user));
       })
       .catch((error) => {

@@ -8,6 +8,7 @@ const users = api.service('users');
 export default (user) => {
   return (dispatch) =>{
     api.signOut();
+    Actions.signIn();
     dispatch(signedOutUser());
   }
 }
