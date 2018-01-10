@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import connect from 'react-redux'
 import {
   View,
   Text,
@@ -11,7 +12,7 @@ import Person, { formOptions } from '../models/Person';
 import styles from './SignUp.styles';
 import signUp from '../actions/users/sign-up';
 
-export default class SignUp extends Component {
+class SignUp extends Component {
   constructor(props) {
     super(props);
 
@@ -39,7 +40,7 @@ export default class SignUp extends Component {
     const newUser = form.getValue();
     if (!newUser) return;
     console.log(newUser);
-    signUp(newUser);
+    this.props.signUp(newUser);
 
     this.clearForm();
   }
@@ -71,3 +72,7 @@ export default class SignUp extends Component {
     );
   }
 }
+
+const mapStateToProps = ({ loading }) => ({ loading })
+
+export default connect(mapStateToProps, { signUp })
