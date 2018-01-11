@@ -5,8 +5,8 @@ import { CALL_API, FIND } from '../../middleware/api'
 
 export const SUBSCRIBED_TO_USERS_SERVICE = 'SUBSCRIBED_TO_USERS_SERVICE'
 export const USER_CREATED = 'USER_CREATED'
-// export const MESSAGE_UPDATED = 'MESSAGE_UPDATED'
-// export const MESSAGE_REMOVED = 'MESSAGE_REMOVED'
+export const USER_UPDATED = 'USER_UPDATED'
+export const USER_REMOVED = 'USER_REMOVED'
 
 const api = new API()
 const users = api.service('users')
@@ -14,6 +14,20 @@ const users = api.service('users')
 const createdUser = (user) => {
   return {
     type: USER_CREATED,
+    payload: user
+  }
+}
+
+const updatedUser = (user) => {
+  return {
+    type: USER_UPDATED,
+    payload: user
+  }
+}
+
+const removedUser = (user) => {
+  return {
+    type: USER_REMOVED,
     payload: user
   }
 }
@@ -28,7 +42,7 @@ export const loadUsers = () => {
       params: {
         query: {
           '$sort': { createdAt: -1},
-          '$limit': 25,
+          '$limit': 500,
         },
       },
     }
@@ -36,13 +50,14 @@ export const loadUsers = () => {
 }
 
 export default () => {
+  console.log('subscribe to users')
   return (dispatch) => {
     api.authenticate()
       .then(() => {
         users.on('created', (users) => { dispatch(createdUser(user)) })
-        // messages.on('updated', (message) => { dispatch(updatedMessage(message)) })
-        // messages.on('patched', (message) => { dispatch(updatedMessage(message)) })
-        // messages.on('removed', (message) => { dispatch(removedMessage(message)) })
+        users.on('updated', (user) => { dispatch(updatedMessage(user)) })
+        users.on('patched', (user) => { dispatch(updatedMessage(user)) })
+        users.on('removed', (user) => { dispatch(removedMessage(user)) })
       })
 
     dispatch(loadUsers())

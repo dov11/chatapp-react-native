@@ -12,6 +12,7 @@ import t from 'tcomb-form-native';
 import User, { formOptions } from '../models/User';
 import loadUser from '../actions/users/load';
 import signIn from '../actions/users/sign-in';
+import signOut from '../actions/users/sign-out';
 import styles from './SignUp.styles';
 
 class SignIn extends Component {
@@ -42,7 +43,12 @@ class SignIn extends Component {
     const user = form.getValue();
     if (!user) return;
     console.log(user);
+    console.log(this.props);
     this.props.signIn(user);
+  }
+
+  onSignOut = () => event => {
+    this.props.signOut()
   }
 
   render() {
@@ -81,6 +87,15 @@ class SignIn extends Component {
             >
               <Text style={styles.buttonText}>Sign up</Text>
             </TouchableHighlight>
+
+            <TouchableHighlight
+              disabled={loading}
+              style={styles.buttonSecondary}
+              onPress={this.onSignOut}
+              underlayColor='#99d9f4'
+            >
+              <Text style={styles.buttonText}>Sign Out</Text>
+            </TouchableHighlight>
         </KeyboardAvoidingView>
       </View>
     );
@@ -89,4 +104,4 @@ class SignIn extends Component {
 
 const mapStateToProps = ({ user, loading }) => ({ user, loading });
 
-export default connect(mapStateToProps, { loadUser, signIn })(SignIn);
+export default connect(mapStateToProps, { loadUser, signIn, signOut })(SignIn);

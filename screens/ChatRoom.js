@@ -14,8 +14,10 @@ import t from 'tcomb-form-native';
 import ChatMessage, { formOptions } from '../models/ChatMessage';
 import loadUser from '../actions/users/load';
 import subscribeToMessages from '../actions/messages/subscribe';
+import subscribeToUsers from '../actions/users/subscribe';
 import postMessage from '../actions/messages/post';
 import styles from './ChatRoom.styles';
+import signOut from '../actions/users/sign-out'
 
 class ChatRoom extends Component {
   constructor(props) {
@@ -30,6 +32,7 @@ class ChatRoom extends Component {
   componentWillMount() {
     this.props.loadUser();
     this.props.subscribeToMessages();
+    this.props.subscribeToUsers();
   }
 
   clearForm() {
@@ -47,6 +50,10 @@ class ChatRoom extends Component {
     this.setState({ textFieldHeight })
   }
 
+  onSignOut = () => event => {
+    this.props.signOut()
+  }
+
   onSubmit() {
     const { form } = this.refs;
     const newMessage = form.getValue();
@@ -57,6 +64,7 @@ class ChatRoom extends Component {
   renderMessage(message, index) {
     const { users } = this.props
     const author = users.filter((u) => (u._id === message.authorId))[0];
+    console.log(users)
     console.log(author)
 
     return (
@@ -79,13 +87,13 @@ class ChatRoom extends Component {
     const formStyles = Object.assign({},
       {...Form.stylesheet.textbox },
       { normal });
-    console.log(formStyles)
+    // console.log(formStyles)
 
     let messageFormOptions = { ...formOptions };
     messageFormOptions.fields.text.onContentSizeChange = this.onContentSizeChange.bind(this);
     messageFormOptions.fields.text.stylesheet = { ...Form.stylesheet, textbox: { ...formStyles } };
 
-    console.log(messageFormOptions)
+    // console.log(messageFormOptions)
 
     const { user, loading } = this.props;
 
@@ -98,12 +106,7 @@ class ChatRoom extends Component {
           { user && user.error ? <Text style={styles.error}>{user.error.name} { user.error.message }</Text> : null }
 
           <ScrollView ref="scrollView">
-            { this.props.messages.map((message, index) => (
-              <View ref={`msg${index}`} key={index} style={styles.message}>
-                <Text style={styles.author}>{message.author}</Text>
-                <Text style={styles.text}>{message.text}</Text>
-              </View>
-            ))}
+            { this.props.messages.map(this.renderMessage.bind(this))}
           </ScrollView>
 
           <View>
@@ -122,6 +125,14 @@ class ChatRoom extends Component {
             >
               <Text style={styles.buttonText}>Post</Text>
             </TouchableHighlight>
+            <TouchableHighlight
+              disabled={loading}
+              style={styles.buttonSecondary}
+              onPress={this.onSignOut}
+              underlayColor='#99d9f4'
+            >
+              <Text style={styles.buttonText}>Sign Out</Text>
+            </TouchableHighlight>
           </View>
         </KeyboardAvoidingView>
       </View>
@@ -129,6 +140,6 @@ class ChatRoom extends Component {
   }
 }
 
-const mapStateToProps = ({ user, loading, messages }) => ({ user, loading, messages });
+const mapStateToProps = ({ user, users, loading, messages }) => ({ user, users, loading, messages });
 
-export default connect(mapStateToProps, { loadUser, postMessage, subscribeToMessages })(ChatRoom);
+export default connect(mapStateToProps, { loadUser, postMessage, signOut, subscribeToMessages, subscribeToUsers })(ChatRoom);

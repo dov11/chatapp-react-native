@@ -6,7 +6,7 @@ import reducers from './reducers'
 
 const reducer = combineReducers(Object.assign({}, reducers))
 
-const enhancer = composeWithDevTools(
+const enhancer = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__(
   applyMiddleware(ReduxThunk),
   applyMiddleware(apiMiddleware),
 )

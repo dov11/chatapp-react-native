@@ -49,6 +49,7 @@ export const loadMessages = () => {
 }
 
 export default () => {
+  console.log('subscribe to messages')
   return (dispatch) => {
     api.authenticate()
       .then(() => {
